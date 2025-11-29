@@ -123,6 +123,10 @@ void Renderer::CalculateAndLoadPicture()
 {
 	std::vector<VecRgba> picture(Width * Height);
 
+	GLfloat startTime = glfwGetTime();
+
+
+
 	const int batchSize = std::ceil(static_cast<float>(picture.size()) / WorkersCount);
 
 	for (int i = 0; i < WorkersCount; ++i)
@@ -136,6 +140,11 @@ void Renderer::CalculateAndLoadPicture()
 	}
 
 	workers.clear();
+
+	GLfloat currentTime = glfwGetTime();
+	fpsCounter += (currentTime - startTime);
+	fpsNum += 1;
+
 	texture->WriteData(picture.data(), Width, Height, GL_RGBA, GL_UNSIGNED_BYTE);
 }
 
@@ -324,9 +333,6 @@ void Renderer::ProcessInput()
 	GLfloat currentFrame = glfwGetTime();
 	deltaTime = currentFrame - lastFrame;
 	lastFrame = currentFrame;
-
-	fpsCounter += deltaTime;
-	fpsNum += 1;
 
 	if (glfwGetKey(Window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 	{
